@@ -47,8 +47,10 @@ function init(location) {
 
                 var data = fs.readFileSync(path.join(dirpath, templateList[i]), 'utf8');
                 var varlist = data.match(/\${\b\S+?\b}/g);
-                for (var x = 0; x < varlist.length; x++) {
-                    varlist[x] = varlist[x].slice(2, varlist[x].length - 1);
+                if (varlist != null) {
+                    for (var x = 0; x < varlist.length; x++) {
+                        varlist[x] = varlist[x].slice(2, varlist[x].length - 1);
+                    }
                 }
 
                 state[templateNames[i]] = { 'path': templateList[i], 'variables': varlist };
@@ -87,8 +89,8 @@ function init(location) {
             if (!fs.existsSync(path.join(dirpath, '/config/state.json'))) {
                 //console.log(path.join(dirpath, '/config/'));
                 fs.mkdirSync(path.join(dirpath, '/config/'));
-                fs.writeFileSync(path.join(dirpath, '/config/state.json'), JSON.stringify(state, null, 4));
             }
+            fs.writeFileSync(path.join(dirpath, '/config/state.json'), JSON.stringify(state, null, 4));
             resolve();
         });
     });
@@ -98,24 +100,37 @@ async function compile(location, pageName) {
     try {
         await init(location);
         state = require(path.join(dirpath, '/config/state.json'));
-        var page = require(path.join(dirpath, state[pageName]['component']));
-
-        var templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
-        for (var i = 0; i < state[pageName]['variables'].length; i++) {
-            var variablemid = '${' + state[pageName]['variables'][i] + '}';
-            var toReplace = '\\' + variablemid;
-            var expression = new RegExp(toReplace, 'g');
-            console.log(expression);
-            var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
-            console.log(page[state[pageName]['variables'][i]]);
-            templateData = result;
-            if (!fs.existsSync(path.join(dirpath, '/cached-result/'))) {
-                fs.mkdirSync(path.join(dirpath, '/cached-result/'));
+        if (isset(() => state[pageName]['component'])) {
+            var page = require(path.join(dirpath, state[pageName]['component']));
+            var templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
+            if (state[pageName]['variables'] != null) {
+                for (var i = 0; i < state[pageName]['variables'].length; i++) {
+                    var variablemid = '${' + state[pageName]['variables'][i] + '}';
+                    var toReplace = '\\' + variablemid;
+                    var expression = new RegExp(toReplace, 'g');
+                    console.log(expression);
+                    var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
+                    console.log(page[state[pageName]['variables'][i]]);
+                    templateData = result;
+                    if (!fs.existsSync(path.join(dirpath, '/output/'))) {
+                        fs.mkdirSync(path.join(dirpath, '/output/'));
+                    }
+                    fs.writeFileSync('output/' + pageName + '.html', result, 'utf8');
+                }
+            } else {
+                if (!fs.existsSync(path.join(dirpath, '/output/'))) {
+                    fs.mkdirSync(path.join(dirpath, '/output/'));
+                }
+                fs.writeFileSync('output/' + pageName + '.html', templateData, 'utf8');
             }
-            fs.writeFileSync('cached-result/' + pageName + '.html', result, 'utf8');
-
+        } else {
+            templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
+            if (!fs.existsSync(path.join(dirpath, '/output/'))) {
+                fs.mkdirSync(path.join(dirpath, '/output/'));
+            }
+            fs.writeFileSync('output/' + pageName + '.html', templateData, 'utf8');
         }
-    } catch(error) {
+    } catch (error) {
         console.log(error);
     }
 }
