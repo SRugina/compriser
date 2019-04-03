@@ -1,0 +1,26 @@
+{
+    "about": {
+        "path": "/templates/pages/about.template",
+        "variables": [
+            "title",
+            "content"
+        ],
+        "component": "/components/pages/about.js"
+    },
+    "homepage": {
+        "path": "/templates/pages/homepage.template",
+        "variables": [
+            "title",
+            "content"
+        ],
+        "component": "/components/pages/homepage.js"
+    },
+    "addon-components": {
+        "test": {
+            "path": "/components/pages/test.js"
+        },
+        "layout": {
+            "path": "/components/pages/layout.js"
+        }
+    }
+}
