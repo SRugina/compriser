@@ -1,0 +1,15 @@
+{
+    "index": {
+        "path": "/templates/index.template",
+        "variables": [
+            "title",
+            "content"
+        ],
+        "component": "/components/pages/index.js"
+    },
+    "addon-components": {
+        "layout": {
+            "path": "/components/layout.js"
+        }
+    }
+}
