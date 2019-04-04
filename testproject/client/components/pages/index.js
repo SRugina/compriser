@@ -6,7 +6,9 @@ function content() {
     return (
         `${layout(
             `<p>this is very interesting content!</p>
-            <div style='position: relative; background-color: red; width: 300px; height: 300px;'></div>`
+            <div style='position: relative; background-color: red; width: 300px; height: 300px;'>
+                hello there!
+            </div>`
         )}`
     );
 }

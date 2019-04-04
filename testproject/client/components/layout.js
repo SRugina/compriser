@@ -8,5 +8,5 @@ const layout = (children) => {
 
 
 module.exports = {
-    layout,
+    layout
 };

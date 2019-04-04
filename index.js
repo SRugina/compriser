@@ -97,42 +97,45 @@ function init(location) {
 }
 
 async function compile(location, pageName) {
-    try {
-        await init(location);
-        state = require(path.join(dirpath, '/config/state.json'));
-        if (isset(() => state[pageName]['component'])) {
-            var page = require(path.join(dirpath, state[pageName]['component']));
-            var templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
-            if (state[pageName]['variables'] != null) {
-                for (var i = 0; i < state[pageName]['variables'].length; i++) {
-                    var variablemid = '${' + state[pageName]['variables'][i] + '}';
-                    var toReplace = '\\' + variablemid;
-                    var expression = new RegExp(toReplace, 'g');
-                    console.log(expression);
-                    var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
-                    console.log(page[state[pageName]['variables'][i]]);
-                    templateData = result;
+    return new Promise(async resolve => {
+        try {
+            await init(location);
+            state = require(path.join(dirpath, '/config/state.json'));
+            if (isset(() => state[pageName]['component'])) {
+                var page = require(path.join(dirpath, state[pageName]['component']));
+                var templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
+                if (state[pageName]['variables'] != null) {
+                    for (var i = 0; i < state[pageName]['variables'].length; i++) {
+                        var variablemid = '${' + state[pageName]['variables'][i] + '}';
+                        var toReplace = '\\' + variablemid;
+                        var expression = new RegExp(toReplace, 'g');
+                        console.log(expression);
+                        var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
+                        console.log(page[state[pageName]['variables'][i]]);
+                        templateData = result;
+                        if (!fs.existsSync(path.join(dirpath, '/output/'))) {
+                            fs.mkdirSync(path.join(dirpath, '/output/'));
+                        }
+                        fs.writeFileSync(path.join(dirpath, '/output/' + pageName + '.html'), result, 'utf8');
+                    }
+                } else {
                     if (!fs.existsSync(path.join(dirpath, '/output/'))) {
                         fs.mkdirSync(path.join(dirpath, '/output/'));
                     }
-                    fs.writeFileSync('output/' + pageName + '.html', result, 'utf8');
+                    fs.writeFileSync(path.join(dirpath,'/output/' + pageName + '.html'), templateData, 'utf8');
                 }
             } else {
+                templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
                 if (!fs.existsSync(path.join(dirpath, '/output/'))) {
                     fs.mkdirSync(path.join(dirpath, '/output/'));
                 }
-                fs.writeFileSync('output/' + pageName + '.html', templateData, 'utf8');
+                fs.writeFileSync(path.join(dirpath,'/output/' + pageName + '.html'), templateData, 'utf8');
             }
-        } else {
-            templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
-            if (!fs.existsSync(path.join(dirpath, '/output/'))) {
-                fs.mkdirSync(path.join(dirpath, '/output/'));
-            }
-            fs.writeFileSync('output/' + pageName + '.html', templateData, 'utf8');
+        } catch (error) {
+            console.log(error);
         }
-    } catch (error) {
-        console.log(error);
-    }
+        resolve();
+    });
 }
 
 
