@@ -47,6 +47,8 @@ function init(location) {
 
                 var data = fs.readFileSync(path.join(dirpath, templateList[i]), 'utf8');
                 var varlist = data.match(/\${\b\S+?\b}/g);
+                varlist = Array.from(new Set(varlist));
+                console.log(varlist);
                 if (varlist != null) {
                     for (var x = 0; x < varlist.length; x++) {
                         varlist[x] = varlist[x].slice(2, varlist[x].length - 1);
@@ -81,11 +83,6 @@ function init(location) {
                     state['addon-components'][componentNames[i]] = { 'path': componentList[i] };
                 }
             }
-            /*fs.promises.mkdirSync(path.dirname(path.join(dirpath, '/config/state.json')), { recursive: true }).then(() => fs.promises.writeFileSync(path.join(dirpath, '/config/state.json'), JSON.stringify(state, null, 4), function (err) {
-                if (err) return console.log(err);
-                //console.log(JSON.stringify(state));
-                //console.log('writing to state.json');aybe do that,
-            }));*/
             if (!fs.existsSync(path.join(dirpath, '/config/state.json'))) {
                 //console.log(path.join(dirpath, '/config/'));
                 fs.mkdirSync(path.join(dirpath, '/config/'));
@@ -113,11 +110,12 @@ async function compile(location, pageName) {
                         var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
                         console.log(page[state[pageName]['variables'][i]]);
                         templateData = result;
-                        if (!fs.existsSync(path.join(dirpath, '/output/'))) {
-                            fs.mkdirSync(path.join(dirpath, '/output/'));
-                        }
-                        fs.writeFileSync(path.join(dirpath, '/output/' + pageName + '.html'), result, 'utf8');
+                        console.log(result);
                     }
+                    if (!fs.existsSync(path.join(dirpath, '/output/'))) {
+                        fs.mkdirSync(path.join(dirpath, '/output/'));
+                    }
+                    fs.writeFileSync(path.join(dirpath, '/output/' + pageName + '.html'), templateData, 'utf8');
                 } else {
                     if (!fs.existsSync(path.join(dirpath, '/output/'))) {
                         fs.mkdirSync(path.join(dirpath, '/output/'));

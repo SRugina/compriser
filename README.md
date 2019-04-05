@@ -12,9 +12,7 @@ These are the html files without the variables/functions/components inserted. fi
 
 #### Syntax:
 
-`${varname}` is for variable/function output or components that need to be inserted. Note: for functions you do not add the (), so a function called test would be written as `${test}` NOT `${test()}`
-
-TODO: global inter-file variables?
+`${varname}` is for variable/function output or components that need to be inserted. Note: for functions you do not add the (), so a function called test would be written as `${test}` **NOT** `${test()}`
 
 TODO: !!! on either side to have it not be replaced
 
@@ -36,9 +34,9 @@ TODO: !!! on either side to have it not be replaced
 
 These files are where the javascript code that defines the variables/functions that are inserted into the template files resides. file ending: `.js`
 
-Each template file can have a 'master' component that is named the same as the template file. In this, all the variables the template uses are defined (TODO: unless it is a global variable).
+Each template file can have a 'master' component that is named the same as the template file. In this, all the variables the template uses are defined.
 
-If a template file does not have a 'master' component, it will be outputed as-is but as a .html file when compiled (TODO: except for global variables).
+If a template file does not have a 'master' component, it will be outputed as-is but as a .html file when compiled.
 
 If a component is not named the same as a template file, it is an 'add-on' component. It can be used in other components e.g. a general layout component.
 
