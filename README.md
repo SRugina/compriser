@@ -14,6 +14,8 @@ These are the html files without the variables/functions/components inserted. fi
 
 `${varname}` is for variable/function output or components that need to be inserted. Note: for functions you do not add the (), so a function called test would be written as `${test}` **NOT** `${test()}`
 
+TODO: Make functions use () and allow passing variables into them from template files!
+
 #### Example: index.template
 
 ```html
