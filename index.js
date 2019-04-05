@@ -6,6 +6,18 @@ const fs = require('fs');
 var dirpath = '';
 var state = {};
 
+
+/**
+ * recursively list all files in a directory. not exposed to end-user, only used internally
+ *
+ * ```javascript
+ * walk(path.join(__dirname, 'client'), callbackFunction());
+ * ```
+ *
+ * @async
+ * @param {path} dir  the path to the folder that contains the 'templates' and 'components' folders
+ * @param {Function} done  the function that the list of files is given to and any errors. (err, res)
+ */
 var walk = function (dir, done) {
     var results = [];
     fs.readdir(dir, function (err, list) {
@@ -30,6 +42,18 @@ var walk = function (dir, done) {
     });
 };
 
+/**
+ * update/create the state.json file. not exposed to end-user, only used internally
+ *
+ * ```javascript
+ * //returns nothing
+ * const templater = require('templater');
+ * templater.init(path.join(__dirname, 'client'));
+ * ```
+ *
+ * @async
+ * @param {path} location  the path to the folder that contains the 'templates' and 'components' folders
+ */
 function init(location) {
     return new Promise(resolve => {
         dirpath = location;
@@ -54,8 +78,8 @@ function init(location) {
                         varlist[x] = varlist[x].slice(2, varlist[x].length - 1);
                     }
                 }
-
-                state[templateNames[i]] = { 'path': templateList[i], 'variables': varlist };
+                let stats = fs.statSync(path.join(dirpath, templateList[i]));
+                state[templateNames[i]] = { 'path': templateList[i], 'variables': varlist, 'last-edit': stats.mtime.valueOf() };
             }
             var componentList = allfiles.filter(function (file) {
                 var isComponent = false;
@@ -74,7 +98,8 @@ function init(location) {
                 componentNames[i] = componentNames[i].split('.');
                 componentNames[i] = componentNames[i][0];
                 if (isset(() => state[componentNames[i]])) {
-                    state[componentNames[i]]['component'] = componentList[i];
+                    let stats = fs.statSync(path.join(dirpath, componentList[i]));
+                    state[componentNames[i]]['component'] = { 'path': componentList[i], 'last-edit': stats.mtime.valueOf() };
                 } else {
                     if (!isset(() => state['addon-components'])) {
                         state['addon-components'] = {};
@@ -88,29 +113,59 @@ function init(location) {
                 fs.mkdirSync(path.join(dirpath, '/config/'));
             }
             fs.writeFileSync(path.join(dirpath, '/config/state.json'), JSON.stringify(state, null, 4));
+            console.log("updating");
             resolve();
         });
     });
 }
 
-async function compile(location, pageName) {
+/**
+ * compile a '.template' file into html, combining components into it.
+ *
+ * ```javascript
+ * //returns nothing
+ * const templater = require('templater');
+ * templater.compile(path.join(__dirname, 'client'), 'index', true);
+ * ```
+ *
+ * @async
+ * @param {path} location the path to the folder that contains the 'templates' and 'components' folders
+ * @param {string} pageName the name of the '.template' file that you want to compile
+ * @param {Boolean=} [toUpdate] optional: whether to check for new components/templates before compiling. Recommended for development mode
+ */
+async function compile(location, pageName, toUpdate) {
     return new Promise(async resolve => {
         try {
-            await init(location);
+            dirpath = location;
+            if (toUpdate == true) {
+                await init(location);
+            }
+            if (!(fs.existsSync(path.join(dirpath, '/config/state.json')))) {
+                await init(location);
+            }
+
             state = require(path.join(dirpath, '/config/state.json'));
+            let stats = fs.statSync(path.join(dirpath, state[pageName]['path']));
+            if (stats.mtime.valueOf() != state[pageName]['last-edit']) {
+                await init(location);
+            }
             if (isset(() => state[pageName]['component'])) {
-                var page = require(path.join(dirpath, state[pageName]['component']));
+                let stats = fs.statSync(path.join(dirpath, state[pageName]['component']['path']));
+                if (stats.mtime.valueOf() != state[pageName]['component']['last-edit']) {
+                    await init(location);
+                }
+                var page = require(path.join(dirpath, state[pageName]['component']['path']));
                 var templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
                 if (state[pageName]['variables'] != null) {
                     for (var i = 0; i < state[pageName]['variables'].length; i++) {
                         var variablemid = '${' + state[pageName]['variables'][i] + '}';
                         var toReplace = '\\' + variablemid;
                         var expression = new RegExp(toReplace, 'g');
-                        console.log(expression);
+                        //console.log(expression);
                         var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
-                        console.log(page[state[pageName]['variables'][i]]);
+                        //console.log(page[state[pageName]['variables'][i]]);
                         templateData = result;
-                        console.log(result);
+                        //console.log(result);
                     }
                     if (!fs.existsSync(path.join(dirpath, '/output/'))) {
                         fs.mkdirSync(path.join(dirpath, '/output/'));
@@ -130,7 +185,12 @@ async function compile(location, pageName) {
                 fs.writeFileSync(path.join(dirpath,'/output/' + pageName + '.html'), templateData, 'utf8');
             }
         } catch (error) {
-            console.log(error);
+            if (error['errno'] == -2) { // one of the files in state.json no longer exists
+                await init(location);
+                compile(location, pageName);
+            } else {
+                console.log(error);
+            }
         }
         resolve();
     });

@@ -9,7 +9,10 @@ const location = process.cwd(); //get folder location of where the command was e
 
 //index.setDirectory(location)
 if (args[0] == 'compile') {
-    if (isset(() => args[1])) {
+    if ( ((args.includes('-u')) || (args.includes('--update'))) && (isset(() => args[1])) ) {
+        index.compile(location, args[1], true);
+        console.log('test');
+    } else if (isset(() => args[1])) {
         index.compile(location, args[1]);
     }
 }

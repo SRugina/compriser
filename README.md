@@ -4,7 +4,7 @@ Templater is a simplistic, fast templating engine that allows a component based 
 
 ## Usage:
 
-the folder used for front-end code must have a `components` folder and a `templates` folder.
+The folder used for front-end code must have a `components` folder and a `templates` folder.
 
 ### Template Files:
 
@@ -13,8 +13,6 @@ These are the html files without the variables/functions/components inserted. fi
 #### Syntax:
 
 `${varname}` is for variable/function output or components that need to be inserted. Note: for functions you do not add the (), so a function called test would be written as `${test}` **NOT** `${test()}`
-
-TODO: !!! on either side to have it not be replaced
 
 #### Example: index.template
 
@@ -120,17 +118,25 @@ module.exports = {
 
 Use the CLI to execute the compile function, for instance when the page is requested (if the file needs to be up to date all the time).
 
+The command to execute is `templater compile TEMPLATER_FILE_NAME` e.g. `templater compile index`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
+
+If you've added new components or templates since the last compile, add a `-u` or `--update` flag onto the compile command. **This is the recommended way to use the compile function when in the development phase**
+
+Note: you cannot compile 'add-on' components.
+
 Go Example: TODO
 
 Rust Example: TODO
 
-Other:
-
-the command to execute is `templater compile TEMPLATER_FILE_NAME` e.g. `templater compile index`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
+PHP Example: TODO
 
 #### NodeJS backend:
 
-Use `require()` statements.
+Use `require('templater')` to import templater. Then, to compile a single page, do `template.compile(path, page)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled.
+
+If you've added new components or templates since the last compile, send `true` as a third parameter to the compile function, like so: `template.compile(path, page, true)`. **This is the recommended way to use the compile function when in the development phase**
+
+Note: you cannot compile 'add-on' components.
 
 Express Example:
 
@@ -142,7 +148,7 @@ const path = require('path');
 const templater = require('templater');
 
 async function homepage(req, res) {
-    await templater.compile(path.join(__dirname, '../client'), 'index'); //this will execute first, making sure the output index.html file exists so no errors occur on the first request.
+    await templater.compile(path.join(__dirname, '../client'), 'index', true); //this will execute first, making sure the output index.html file exists so no errors occur on the first request.
     res.sendFile(path.join(__dirname, '../client/output/index.html'));
 }
 

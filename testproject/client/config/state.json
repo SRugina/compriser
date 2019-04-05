@@ -5,7 +5,11 @@
             "title",
             "content"
         ],
-        "component": "/components/pages/index.js"
+        "last-edit": 1554493839401,
+        "component": {
+            "path": "/components/pages/index.js",
+            "last-edit": 1554498124519
+        }
     },
     "addon-components": {
         "layout": {
