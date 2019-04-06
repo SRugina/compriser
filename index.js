@@ -54,7 +54,7 @@ var walk = function (dir, done) {
  * @async
  * @param {path} location  the path to the folder that contains the 'templates' and 'components' folders
  */
-function init(location) {
+const init = (location) => {
     return new Promise(resolve => {
         dirpath = location;
         walk(dirpath, function (err, allfiles) {
@@ -121,7 +121,7 @@ function init(location) {
             resolve();
         });
     });
-}
+};
 
 /**
  * compile a '.template' file into html, combining components into it.
@@ -137,7 +137,7 @@ function init(location) {
  * @param {string} pageName the name of the '.template' file that you want to compile
  * @param {Boolean=} [toUpdate] optional: whether to check for new components/templates before compiling. Recommended for development mode
  */
-async function compile(location, pageName, toUpdate) {
+const compile = async (location, pageName, toUpdate) => {
     return new Promise(async resolve => {
         try {
             dirpath = location;
@@ -208,7 +208,7 @@ async function compile(location, pageName, toUpdate) {
         }
         resolve();
     });
-}
+};
 
 
 module.exports = {

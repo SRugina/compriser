@@ -2,7 +2,7 @@ let title = 'hello!';
 
 const layout = require('../layout').layout;
 
-function content() {
+const content = () => {
     return (
         `${layout(
             `<p>this is very interesting content!</p>
@@ -11,7 +11,7 @@ function content() {
             </div>`
         )}`
     );
-}
+};
 
 module.exports = {
     title,

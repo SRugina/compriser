@@ -1,6 +1,6 @@
 # Templater
 
-Templater is a simplistic, fast templating engine that allows a component based workflow all server-side.
+Templater is a simplistic, fast templating parser that allows a component based workflow - all server-side.
 
 ## Usage:
 
@@ -30,7 +30,7 @@ These are the html files without the variables/functions/components inserted. fi
 
 ### Component Files:
 
-These files are where the javascript code that defines the variables/functions that are inserted into the template files resides. file ending: `.js`
+These files are where you define the variables/functions that get inserted into template files. file ending: `.js`
 
 Each template file can have a 'master' component that is named the same as the template file. In this, all the variables the template uses are defined.
 
@@ -95,7 +95,7 @@ let title = 'hello!';
 
 const layout = require('./layout').layout;
 
-function content() {
+const content = () => {
     return (
         `${layout(
             `<p>this is very interesting content!</p>
