@@ -12,9 +12,7 @@ These are the html files without the variables/functions/components inserted. fi
 
 #### Syntax:
 
-`${varname}` is for variable/function output or components that need to be inserted. Note: for functions you do not add the (), so a function called test would be written as `${test}` **NOT** `${test()}`
-
-TODO: Make functions use () and allow passing variables into them from template files!
+`${varname}` is for variable/function output or components that need to be inserted. For functions you do `${funcname()}` or `${funcname}`. Passing arguments into functions from template files is not supported, as logic should be stored in the component files, not the template files. If an argument(s) is passed into the function, that argument(s) will simply be ignored.
 
 #### Example: index.template
 
@@ -25,7 +23,7 @@ TODO: Make functions use () and allow passing variables into them from template 
         <title>${title}</title>
     </head>
     <body>
-        ${content}
+        ${content()}
     </body>
 </html>
 ```
@@ -70,7 +68,7 @@ return (`
         `);
 ```
 
-as this will add unnecessary new lines and tabs/spaces to the end html file.
+as this will add unnecessary new lines and tabs/spaces to the resultant html file.
 
 ##### 'add-on' component Syntax:
 

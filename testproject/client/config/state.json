@@ -3,9 +3,12 @@
         "path": "/templates/index.template",
         "variables": [
             "title",
-            "content"
+            [
+                "content",
+                ""
+            ]
         ],
-        "last-edit": 1554493839401,
+        "last-edit": 1554560384363,
         "component": {
             "path": "/components/pages/index.js",
             "last-edit": 1554504444473

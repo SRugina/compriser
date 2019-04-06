@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const templater = rquire('./index.js');
+const templater = require('./index.js');
 
 console.log(stats.mtime.valueOf());

@@ -70,12 +70,16 @@ function init(location) {
                 templateNames[i] = templateNames[i][0];
 
                 var data = fs.readFileSync(path.join(dirpath, templateList[i]), 'utf8');
-                var varlist = data.match(/\${\b\S+?\b}/g);
+                var varlist = data.match(/\${.+?}/g);
                 varlist = Array.from(new Set(varlist));
-                console.log(varlist);
                 if (varlist != null) {
                     for (var x = 0; x < varlist.length; x++) {
                         varlist[x] = varlist[x].slice(2, varlist[x].length - 1);
+                        if (varlist[x].includes("(")) { //ie if a function
+                            varlist[x] = varlist[x].split(/\(|\)/);
+                            varlist[x].splice(varlist[x].length - 1, 1); // 0 is func name, 1 is arguments
+                            console.log(varlist[x]);
+                        }
                     }
                 }
                 let stats = fs.statSync(path.join(dirpath, templateList[i]));
@@ -158,11 +162,21 @@ async function compile(location, pageName, toUpdate) {
                 var templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
                 if (state[pageName]['variables'] != null) {
                     for (var i = 0; i < state[pageName]['variables'].length; i++) {
-                        var variablemid = '${' + state[pageName]['variables'][i] + '}';
-                        var toReplace = '\\' + variablemid;
+                        let variableMid;
+                        if (Array.isArray(state[pageName]['variables'][i])) { //ie is a function
+                            variableMid = '${' + state[pageName]['variables'][i][0] + '\\(' + state[pageName]['variables'][i][1] + '\\)' + '}';
+                        } else {
+                            variableMid = '${' + state[pageName]['variables'][i] + '}';
+                        }
+                        var toReplace = '\\' + variableMid;
                         var expression = new RegExp(toReplace, 'g');
                         //console.log(expression);
-                        var result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
+                        let result;
+                        if (Array.isArray(state[pageName]['variables'][i])) { //ie is a function
+                            result = templateData.replace(expression, page[state[pageName]['variables'][i][0]]);
+                        } else {
+                            result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
+                        }
                         //console.log(page[state[pageName]['variables'][i]]);
                         templateData = result;
                         //console.log(result);
@@ -175,14 +189,14 @@ async function compile(location, pageName, toUpdate) {
                     if (!fs.existsSync(path.join(dirpath, '/output/'))) {
                         fs.mkdirSync(path.join(dirpath, '/output/'));
                     }
-                    fs.writeFileSync(path.join(dirpath,'/output/' + pageName + '.html'), templateData, 'utf8');
+                    fs.writeFileSync(path.join(dirpath, '/output/' + pageName + '.html'), templateData, 'utf8');
                 }
             } else {
                 templateData = fs.readFileSync(path.join(dirpath, state[pageName]['path']), 'utf8');
                 if (!fs.existsSync(path.join(dirpath, '/output/'))) {
                     fs.mkdirSync(path.join(dirpath, '/output/'));
                 }
-                fs.writeFileSync(path.join(dirpath,'/output/' + pageName + '.html'), templateData, 'utf8');
+                fs.writeFileSync(path.join(dirpath, '/output/' + pageName + '.html'), templateData, 'utf8');
             }
         } catch (error) {
             if (error['errno'] == -2) { // one of the files in state.json no longer exists
