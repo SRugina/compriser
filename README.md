@@ -163,13 +163,13 @@ use std::process::Command;
 use std::io::{self, Write};
 let output = if cfg!(target_os = "windows") {
     Command::new("cmd")
-            .args(&["/C", "cd client && compriser compile index"])
+            .args(&["/C", "cd client && compriser compile index -u"])
             .output()
             .expect("failed to execute process")
 } else {
     Command::new("sh")
             .arg("-c")
-            .arg("cd client && compriser compile index")
+            .arg("cd client && compriser compile index -u")
             .output()
             .expect("failed to execute process")
 };
@@ -183,7 +183,7 @@ PHP Execute Command:
 
 ```php
 ...
-shell_exec('cd client && compriser compile index');
+shell_exec('cd client && compriser compile index -u');
 ...
 ```
 
