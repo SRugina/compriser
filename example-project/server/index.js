@@ -4,10 +4,10 @@ const path = require('path');
 
 var templater = require('../../index');
 
-async function homepage(req, res) {
+const homepage = async (req, res) => {
     await templater.compile(path.join(__dirname, '../client'), 'index');
     res.sendFile(path.join(__dirname, '../client/output/index.html'));
-}
+};
 
 app.get('/', (req, res) => homepage(req, res));
 

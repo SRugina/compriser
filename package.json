@@ -1,12 +1,20 @@
 {
   "name": "templater",
   "version": "1.0.0",
-  "description": "",
+  "description": "Templater is a simplistic, fast templating system that allows a component based workflow - all server-side.",
   "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bin": {
     "templater": "./cli.js"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SRugina/templater.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SRugina/templater/issues"
+  },
+  "homepage": "https://github.com/SRugina/templater#readme"
 }

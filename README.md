@@ -1,10 +1,14 @@
 # Templater
 
-Templater is a simplistic, fast templating parser that allows a component based workflow - all server-side.
+Templater is a simplistic, fast templating system that allows a component based workflow - all server-side.
 
 ## Usage:
 
 The folder used for front-end code must have a `components` folder and a `templates` folder.
+
+### How does it Work?:
+
+![how templater works](./templater-howitworks.jpg)
 
 ### Template Files:
 
@@ -118,17 +122,69 @@ module.exports = {
 
 Use the CLI to execute the compile function, for instance when the page is requested (if the file needs to be up to date all the time).
 
-The command to execute is `templater compile TEMPLATER_FILE_NAME` e.g. `templater compile index`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
+The command to execute is `templater compile TEMPLATER_FILE_NAME -u` e.g. `templater compile index -u`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
 
-If you've added new components or templates since the last compile, add a `-u` or `--update` flag onto the compile command. **This is the recommended way to use the compile function when in the development phase**
+The `-u`/`--update` flag is for if you've added new components or templates since the last compile. For production, you should remove this flag for extra performance.
 
 Note: you cannot compile 'add-on' components.
 
-Go Example: TODO
+Go Example:
 
-Rust Example: TODO
+```go
+package main
 
-PHP Example: TODO
+import (
+	"log"
+	"net/http"
+	"os/exec"
+)
+
+func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		out, err := exec.Command("/bin/bash", "-c", "cd client && templater compile index -u").Output();
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf(string(out))
+        http.ServeFile(w, r, "client/output/index.html")
+    })
+	if err := http.ListenAndServe(":3000", nil); err != nil {
+		panic(err)
+	}
+}
+```
+
+Rust Execute Command:
+
+```rust
+...
+use std::process::Command;
+use std::io::{self, Write};
+let output = if cfg!(target_os = "windows") {
+    Command::new("cmd")
+            .args(&["/C", "cd client && templater compile index"])
+            .output()
+            .expect("failed to execute process")
+} else {
+    Command::new("sh")
+            .arg("-c")
+            .arg("cd client && templater compile index")
+            .output()
+            .expect("failed to execute process")
+};
+io::stdout().write_all(&output.stdout).unwrap();
+io::stderr().write_all(&output.stderr).unwrap();
+
+...
+```
+
+PHP Execute Command:
+
+```php
+...
+shell_exec('cd client && templater compile index');
+...
+```
 
 #### NodeJS backend:
 
@@ -138,7 +194,7 @@ If you've added new components or templates since the last compile, send `true` 
 
 Note: you cannot compile 'add-on' components.
 
-Express Example:
+ExpressJS Example:
 
 ```js
 const express = require('express');
