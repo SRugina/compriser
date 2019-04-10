@@ -78,7 +78,7 @@ const init = (location) => {
                         if (varlist[x].includes("(")) { //ie if a function
                             varlist[x] = varlist[x].split(/\(|\)/);
                             varlist[x].splice(varlist[x].length - 1, 1); // 0 is func name, 1 is arguments
-                            console.log(varlist[x]);
+                            //console.log(varlist[x]);
                         }
                     }
                 }
