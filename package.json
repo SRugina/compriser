@@ -1,7 +1,7 @@
 {
   "name": "compriser",
   "version": "1.0.0",
-  "description": "compriser is a simplistic, fast templating system that allows a component based workflow - all server-side.",
+  "description": "compriser is a simplistic, fast templating system that allows for a component based workflow - all server-side.",
   "main": "index.js",
   "keywords": [
     "template",
