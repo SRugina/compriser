@@ -5,7 +5,7 @@ Compriser is a simplistic, fast templating system that allows for a component ba
 
 ### How does it Work?:
 
-![how compriser works](https://i.ibb.co/RBTBB5v/compriser-howitworks.jpg)
+![how compriser works](https://i.ibb.co/wchqtBk/compriser-howitworks.jpg)
 
 ## Usage:
 
@@ -56,21 +56,21 @@ when returning multi-line code, use the backtick "\`" instead of double/single q
 ```js
 return (
     `<p>this is very interesting content!</p>
-        <div style='position: relative; background-color: red; width: 300px; height: 300px;'>
-            hello there!
-        </div>`
-    );
+    <div style='position: relative; background-color: red; width: 300px; height: 300px;'>
+        hello there!
+    </div>`
+);
 ```
 
 **NOT THIS:**
 
 ```js
 return (`
-        <p>this is very interesting content!</p>
-        <div style='position: relative; background-color: red; width: 300px; height: 300px;'>
-            hello there!
-        </div>
-        `);
+    <p>this is very interesting content!</p>
+    <div style='position: relative; background-color: red; width: 300px; height: 300px;'>
+        hello there!
+    </div>
+`);
 ```
 
 as this will add unnecessary new lines and tabs/spaces to the resultant html file.
@@ -189,11 +189,9 @@ shell_exec('cd client && compriser compile index');
 
 #### NodeJS backend:
 
-Use `require('compriser')` to import compriser. Then, to compile a single page, do `template.compile(path, page)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled.
+Use `require('compriser')` to import compriser. Then, to compile a single page, do `template.compile(path, page, true)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled. The third property is optional, but if set to true it will detect new new components or templates since the last compile and add them to the internal state.**This is the recommended way to use the compile function when in the development phase**
 
-If you've added new components or templates since the last compile, send `true` as a third parameter to the compile function, like so: `template.compile(path, page, true)`. **This is the recommended way to use the compile function when in the development phase**
-
-Note: you cannot compile 'add-on' components.
+Note: you cannot compile 'add-on' components, as they do not need to be compiled.
 
 ExpressJS Example:
 
