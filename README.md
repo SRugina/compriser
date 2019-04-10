@@ -125,7 +125,7 @@ Use the CLI to execute the compile function, for instance when the page is reque
 
 The command to execute is `compriser compile compriser_FILE_NAME -u` e.g. `compriser compile index -u`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
 
-Alternatively, you could do `compriser compile -a`, which will compile all the template files at once, if that is needed.
+Alternatively, you could do `compriser compile -a` (or `--all`), which will compile all the template files at once, if that is needed.
 
 The `-u`/`--update` flag is for if you've added new components or templates since the last compile. For production, you should remove this flag for extra performance.
 
