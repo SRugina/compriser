@@ -125,6 +125,8 @@ Use the CLI to execute the compile function, for instance when the page is reque
 
 The command to execute is `compriser compile compriser_FILE_NAME -u` e.g. `compriser compile index -u`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
 
+Alternatively, you could do `compriser compile -a`, which will compile all the template files at once, if that is needed.
+
 The `-u`/`--update` flag is for if you've added new components or templates since the last compile. For production, you should remove this flag for extra performance.
 
 Note: you cannot compile 'add-on' components.
@@ -142,7 +144,8 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		out, err := exec.Command("/bin/bash", "-c", "cd client && compriser compile index -u").Output();
+        out, err := exec.Command("/bin/bash", "-c", "cd client && compriser compile index -u").Output();
+        //OR compriser compile -a -u
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -163,13 +166,13 @@ use std::process::Command;
 use std::io::{self, Write};
 let output = if cfg!(target_os = "windows") {
     Command::new("cmd")
-            .args(&["/C", "cd client && compriser compile index -u"])
+            .args(&["/C", "cd client && compriser compile index -u"]) //OR compriser compile -a -u
             .output()
             .expect("failed to execute process")
 } else {
     Command::new("sh")
             .arg("-c")
-            .arg("cd client && compriser compile index -u")
+            .arg("cd client && compriser compile index -u") //OR compriser compile -a -u
             .output()
             .expect("failed to execute process")
 };
@@ -184,12 +187,16 @@ PHP Execute Command:
 ```php
 ...
 shell_exec('cd client && compriser compile index -u');
+// OR to compile all templates at once:
+shell_exec('cd client && compriser -a -u');
 ...
 ```
 
 #### NodeJS backend:
 
-Use `require('compriser')` to import compriser. Then, to compile a single page, do `template.compile(path, page, true)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled. The third property is optional, but if set to true it will detect new new components or templates since the last compile and add them to the internal state.**This is the recommended way to use the compile function when in the development phase**
+Use `const compriser = require('compriser')` to import compriser. Then, to compile a single page, do `compriser.compile(path, page, true)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled. The third property is optional, but if set to true it will detect new new components or templates since the last compile and add them to the internal state.**This is the recommended way to use the compile function when in the development phase**
+
+Alternatively, you could do `compriser.compileAll(path, true)`, which will compile all the template files at once, if that is needed. Again, the last parameter is optional, but if set to true it will detect new new components or templates since the last compile and add them to the internal state.
 
 Note: you cannot compile 'add-on' components, as they do not need to be compiled.
 
