@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "compriser is a simplistic, fast templating system that allows for a component based workflow - all server-side.",
   "main": "index.js",
+  "scripts": {
+    "prepack": "npm run min-index && npm run min-cli && npm run min-isset",
+    "min-index": "./node_modules/.bin/minify index.js",
+    "min-cli": "./node_modules/.bin/minify cli.js",
+    "min-isset": "./node_modules/.bin/minify utils/isset.js"
+  },
   "keywords": [
     "template",
     "templating",
@@ -24,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/SRugina/compriser/issues"
   },
-  "homepage": "https://github.com/SRugina/compriser#readme"
+  "homepage": "https://github.com/SRugina/compriser#readme",
+  "devDependencies": {
+    "babel-minify": "^0.5.0"
+  }
 }

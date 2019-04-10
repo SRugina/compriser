@@ -199,8 +199,7 @@ const compile = async (location, pageName, toUpdate) => {
             }
         } catch (error) {
             if (error['errno'] == -2) { // one of the files in state.json no longer exists
-                await init(location);
-                compile(location, pageName);
+                compile(location, pageName, true);
             } else {
                 console.log(error);
             }
@@ -225,9 +224,6 @@ const compile = async (location, pageName, toUpdate) => {
 const compileAll = async (location, toUpdate) => {
     return new Promise(async resolve => {
         try {
-            if (toUpdate == true) {
-                await init(location);
-            }
             if (!(fs.existsSync(path.join(location, '/config/state.json')))) {
                 await init(location);
             }
@@ -237,61 +233,12 @@ const compileAll = async (location, toUpdate) => {
                 if (pageName == 'addon-components') {
                     continue;
                 } else {
-                    let stats = fs.statSync(path.join(location, state[pageName]['path']));
-                    if (stats.mtime.valueOf() != state[pageName]['last-edit']) {
-                        await init(location);
-                    }
-                    if (isset(() => state[pageName]['component'])) {
-                        let stats = fs.statSync(path.join(location, state[pageName]['component']['path']));
-                        if (stats.mtime.valueOf() != state[pageName]['component']['last-edit']) {
-                            await init(location);
-                        }
-                        var page = require(path.join(location, state[pageName]['component']['path']));
-                        var templateData = fs.readFileSync(path.join(location, state[pageName]['path']), 'utf8');
-                        if (state[pageName]['variables'] != null) {
-                            for (var i = 0; i < state[pageName]['variables'].length; i++) {
-                                let variableMid;
-                                if (Array.isArray(state[pageName]['variables'][i])) { //ie is a function
-                                    variableMid = '${' + state[pageName]['variables'][i][0] + '\\(' + state[pageName]['variables'][i][1] + '\\)' + '}';
-                                } else {
-                                    variableMid = '${' + state[pageName]['variables'][i] + '}';
-                                }
-                                var toReplace = '\\' + variableMid;
-                                var expression = new RegExp(toReplace, 'g');
-                                //console.log(expression);
-                                let result;
-                                if (Array.isArray(state[pageName]['variables'][i])) { //ie is a function
-                                    result = templateData.replace(expression, page[state[pageName]['variables'][i][0]]);
-                                } else {
-                                    result = templateData.replace(expression, page[state[pageName]['variables'][i]]);
-                                }
-                                //console.log(page[state[pageName]['variables'][i]]);
-                                templateData = result;
-                                //console.log(result);
-                            }
-                            if (!fs.existsSync(path.join(location, '/output/'))) {
-                                fs.mkdirSync(path.join(location, '/output/'));
-                            }
-                            fs.writeFileSync(path.join(location, '/output/' + pageName + '.html'), templateData, 'utf8');
-                        } else {
-                            if (!fs.existsSync(path.join(location, '/output/'))) {
-                                fs.mkdirSync(path.join(location, '/output/'));
-                            }
-                            fs.writeFileSync(path.join(location, '/output/' + pageName + '.html'), templateData, 'utf8');
-                        }
-                    } else {
-                        templateData = fs.readFileSync(path.join(location, state[pageName]['path']), 'utf8');
-                        if (!fs.existsSync(path.join(location, '/output/'))) {
-                            fs.mkdirSync(path.join(location, '/output/'));
-                        }
-                        fs.writeFileSync(path.join(location, '/output/' + pageName + '.html'), templateData, 'utf8');
-                    }
+                    compile(location, pageName, toUpdate);
                 }
             }
         } catch (error) {
             if (error['errno'] == -2) { // one of the files in state.json no longer exists
-                await init(location);
-                compile(location, pageName);
+                compileAll(location, true);
             } else {
                 console.log(error);
             }
