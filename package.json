@@ -1,20 +1,28 @@
 {
-  "name": "templater",
+  "name": "compriser",
   "version": "1.0.0",
-  "description": "Templater is a simplistic, fast templating system that allows a component based workflow - all server-side.",
+  "description": "compriser is a simplistic, fast templating system that allows a component based workflow - all server-side.",
   "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "template",
+    "templating",
+    "compriser",
+    "templating engine",
+    "templating system",
+    "component",
+    "components"
+  ],
+  "author": "Sebastian Rugina <dev@srugina.com> (https://srugina.com)",
+  "license": "MIT",
   "bin": {
-    "templater": "./cli.js"
+    "compriser": "./cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SRugina/templater.git"
+    "url": "git+https://github.com/SRugina/compriser.git"
   },
   "bugs": {
-    "url": "https://github.com/SRugina/templater/issues"
+    "url": "https://github.com/SRugina/compriser/issues"
   },
-  "homepage": "https://github.com/SRugina/templater#readme"
+  "homepage": "https://github.com/SRugina/compriser#readme"
 }

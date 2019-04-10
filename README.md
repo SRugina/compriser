@@ -1,14 +1,15 @@
-# Templater
+# Compriser
 
-Templater is a simplistic, fast templating system that allows a component based workflow - all server-side.
+Compriser is a simplistic, fast templating system that allows for a component based workflow - all server-side.
+
+
+### How does it Work?:
+
+![how compriser works](https://i.ibb.co/RBTBB5v/compriser-howitworks.jpg)
 
 ## Usage:
 
 The folder used for front-end code must have a `components` folder and a `templates` folder.
-
-### How does it Work?:
-
-![how templater works](./templater-howitworks.jpg)
 
 ### Template Files:
 
@@ -122,7 +123,7 @@ module.exports = {
 
 Use the CLI to execute the compile function, for instance when the page is requested (if the file needs to be up to date all the time).
 
-The command to execute is `templater compile TEMPLATER_FILE_NAME -u` e.g. `templater compile index -u`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
+The command to execute is `compriser compile compriser_FILE_NAME -u` e.g. `compriser compile index -u`. The directory this is executed in is where it will search for the templates and components folder, so make sure to `cd` to the right directory before executing the command.
 
 The `-u`/`--update` flag is for if you've added new components or templates since the last compile. For production, you should remove this flag for extra performance.
 
@@ -141,7 +142,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		out, err := exec.Command("/bin/bash", "-c", "cd client && templater compile index -u").Output();
+		out, err := exec.Command("/bin/bash", "-c", "cd client && compriser compile index -u").Output();
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -162,13 +163,13 @@ use std::process::Command;
 use std::io::{self, Write};
 let output = if cfg!(target_os = "windows") {
     Command::new("cmd")
-            .args(&["/C", "cd client && templater compile index"])
+            .args(&["/C", "cd client && compriser compile index"])
             .output()
             .expect("failed to execute process")
 } else {
     Command::new("sh")
             .arg("-c")
-            .arg("cd client && templater compile index")
+            .arg("cd client && compriser compile index")
             .output()
             .expect("failed to execute process")
 };
@@ -182,13 +183,13 @@ PHP Execute Command:
 
 ```php
 ...
-shell_exec('cd client && templater compile index');
+shell_exec('cd client && compriser compile index');
 ...
 ```
 
 #### NodeJS backend:
 
-Use `require('templater')` to import templater. Then, to compile a single page, do `template.compile(path, page)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled.
+Use `require('compriser')` to import compriser. Then, to compile a single page, do `template.compile(path, page)` where path is the absolute path to the folder that contains the `templates` and `components` folders, and page is a string of the name of the template name that should be compiled.
 
 If you've added new components or templates since the last compile, send `true` as a third parameter to the compile function, like so: `template.compile(path, page, true)`. **This is the recommended way to use the compile function when in the development phase**
 
@@ -201,10 +202,10 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const templater = require('templater');
+const compriser = require('compriser');
 
 async function homepage(req, res) {
-    await templater.compile(path.join(__dirname, '../client'), 'index', true); //this will execute first, making sure the output index.html file exists so no errors occur on the first request.
+    await compriser.compile(path.join(__dirname, '../client'), 'index', true); //this will execute first, making sure the output index.html file exists so no errors occur on the first request.
     res.sendFile(path.join(__dirname, '../client/output/index.html'));
 }
 

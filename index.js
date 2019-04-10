@@ -47,8 +47,8 @@ var walk = function (dir, done) {
  *
  * ```javascript
  * //returns nothing
- * const templater = require('templater');
- * templater.init(path.join(__dirname, 'client'));
+ * const compriser = require('compriser');
+ * compriser.init(path.join(__dirname, 'client'));
  * ```
  *
  * @async
@@ -128,8 +128,8 @@ const init = (location) => {
  *
  * ```javascript
  * //returns nothing
- * const templater = require('templater');
- * templater.compile(path.join(__dirname, 'client'), 'index', true);
+ * const compriser = require('compriser');
+ * compriser.compile(path.join(__dirname, 'client'), 'index', true);
  * ```
  *
  * @async
