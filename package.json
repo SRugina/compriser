@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "prepack": "npm run min-index && npm run min-cli && npm run min-isset",
-    "min-index": "./node_modules/.bin/minify index.js",
-    "min-cli": "./node_modules/.bin/minify cli.js",
-    "min-isset": "./node_modules/.bin/minify utils/isset.js"
+    "min-index": "./node_modules/.bin/minify index.js --out-file index.js",
+    "min-cli": "./node_modules/.bin/minify cli.js --out-file cli.js",
+    "min-isset": "./node_modules/.bin/minify utils/isset.js --out-file utils/isset.js"
   },
   "keywords": [
     "template",

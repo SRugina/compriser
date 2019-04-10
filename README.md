@@ -1,5 +1,8 @@
 # Compriser
 
+![](https://img.shields.io/npm/v/compriser.svg)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/compriser.svg)
+
 Compriser is a simplistic, fast templating system that allows for a component based workflow - all server-side.
 
 
